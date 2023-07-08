@@ -24,7 +24,15 @@ function getUser(req, res) {
 
       res.status(200).send({ data: user });
     })
-    .catch(() => res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
+        });
+        return;
+      }
+      res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
 }
 
 function createUser(req, res) {

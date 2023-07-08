@@ -48,14 +48,14 @@ function likeCard(req, res) {
     { new: true },
   )
     .then((card) => {
-      res.status(201).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === 'NotFoundError') {
+      if (!card) {
         res.status(ERROR_NOT_FOUND).send({ message: ' Запрашиваемая карточка не найдена' });
         return;
       }
-      if (err.name === 'ValidationError') {
+      res.status(201).send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(ERROR_BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
@@ -72,14 +72,14 @@ function dislikeCard(req, res) {
     { new: true },
   )
     .then((card) => {
-      res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === 'NotFoundError') {
+      if (!card) {
         res.status(ERROR_NOT_FOUND).send({ message: ' Запрашиваемая карточка не найдена' });
         return;
       }
-      if (err.name === 'ValidationError') {
+      res.status(200).send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(ERROR_BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
