@@ -14,8 +14,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/', userRouter);
-app.use('/', cardRouter);
 app.use((req, res, next) => {
   req.user = {
     _id: '64a7310003d17ed66282319b',
@@ -23,6 +21,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use('/', userRouter);
+app.use('/', cardRouter);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

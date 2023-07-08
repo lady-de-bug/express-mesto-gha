@@ -1,9 +1,14 @@
 const User = require('../models/user');
+const {
+  ERROR_BAD_REQUEST,
+  ERROR_NOT_FOUND,
+  ERROR_INTERNAL_SERVER_ERROR,
+} = require('../utils/constants');
 
 function getUsers(req, res) {
   return User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 }
 
 function getUser(req, res) {
@@ -12,14 +17,14 @@ function getUser(req, res) {
     .then((user) => {
       if (!user) {
         res
-          .status(404)
+          .status(ERROR_NOT_FOUND)
           .send({ message: ' Запрашиваемый пользователь не найден' });
         return;
       }
 
       res.status(200).send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 }
 
 function createUser(req, res) {
@@ -28,14 +33,12 @@ function createUser(req, res) {
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
         });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }
 
@@ -50,25 +53,22 @@ function updateUser(req, res) {
     },
   )
     .then((user) => {
-      if (!user) {
-        res
-          .status(404)
-          .send({ message: ' Запрашиваемый пользователь не найден' });
-        return;
-      }
-
       res.status(200).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'NotFoundError') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: ' Запрашиваемый пользователь не найден' });
+        return;
+      }
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
         });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }
 
@@ -83,25 +83,22 @@ function updateAvatar(req, res) {
     },
   )
     .then((user) => {
-      if (!user) {
-        res
-          .status(404)
-          .send({ message: ' Запрашиваемый пользователь не найден' });
-        return;
-      }
-
       res.status(200).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'NotFoundError') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: ' Запрашиваемый пользователь не найден' });
+        return;
+      }
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
         });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }
 
