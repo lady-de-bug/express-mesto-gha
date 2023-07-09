@@ -62,13 +62,13 @@ function likeCard(req, res) {
       }
       res.status(201).send({ data: card });
     })
-    .catch(() => {
-      // if (err.name === 'CastError') {
-      //   res.status(ERROR_BAD_REQUEST).send({
-      //     message: 'Переданы некорректные данные',
-      //   });
-      //   return;
-      // }
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
+        });
+        return;
+      }
       res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }
@@ -86,13 +86,13 @@ function dislikeCard(req, res) {
       }
       res.send({ data: card });
     })
-    .catch(() => {
-      // if (err.name === 'CastError') {
-      //   res.status(ERROR_BAD_REQUEST).send({
-      //     message: 'Переданы некорректные данные',
-      //   });
-      //   return;
-      // }
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
+        });
+        return;
+      }
 
       res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });

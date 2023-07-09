@@ -64,12 +64,12 @@ function updateUser(req, res) {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: ' Запрашиваемый пользователь не найден' });
-        return;
-      }
+      // if (err.name === 'NotFoundError') {
+      //   res
+      //     .status(ERROR_NOT_FOUND)
+      //     .send({ message: ' Запрашиваемый пользователь не найден' });
+      //   return;
+      // }
       if (err.name === 'ValidationError') {
         res.status(ERROR_BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
@@ -94,12 +94,12 @@ function updateAvatar(req, res) {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: ' Запрашиваемый пользователь не найден' });
-        return;
-      }
+      // if (err.name === 'NotFoundError') {
+      //   res
+      //     .status(ERROR_NOT_FOUND)
+      //     .send({ message: ' Запрашиваемый пользователь не найден' });
+      //   return;
+      // }
       if (err.name === 'ValidationError') {
         res.status(ERROR_BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
