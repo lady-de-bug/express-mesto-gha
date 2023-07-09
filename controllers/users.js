@@ -7,7 +7,7 @@ const {
 
 function getUsers(req, res) {
   return User.find({})
-    .then((users) => res.status(200).send({ data: users }))
+    .then((users) => res.send({ data: users }))
     .catch(() => res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 }
 
@@ -22,7 +22,7 @@ function getUser(req, res) {
         return;
       }
 
-      res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -61,7 +61,7 @@ function updateUser(req, res) {
     },
   )
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'NotFoundError') {
@@ -91,7 +91,7 @@ function updateAvatar(req, res) {
     },
   )
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'NotFoundError') {

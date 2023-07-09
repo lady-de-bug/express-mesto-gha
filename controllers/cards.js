@@ -7,7 +7,7 @@ const {
 
 function getCards(req, res) {
   return Card.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(() => res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 }
 
@@ -36,7 +36,7 @@ function deleteCard(req, res) {
         return;
       }
 
-      res.status(200).send({ data: card });
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -62,13 +62,13 @@ function likeCard(req, res) {
       }
       res.status(201).send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_BAD_REQUEST).send({
-          message: 'Переданы некорректные данные',
-        });
-        return;
-      }
+    .catch(() => {
+      // if (err.name === 'CastError') {
+      //   res.status(ERROR_BAD_REQUEST).send({
+      //     message: 'Переданы некорректные данные',
+      //   });
+      //   return;
+      // }
       res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }
@@ -84,15 +84,15 @@ function dislikeCard(req, res) {
         res.status(ERROR_NOT_FOUND).send({ message: ' Запрашиваемая карточка не найдена' });
         return;
       }
-      res.status(200).send({ data: card });
+      res.send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_BAD_REQUEST).send({
-          message: 'Переданы некорректные данные',
-        });
-        return;
-      }
+    .catch(() => {
+      // if (err.name === 'CastError') {
+      //   res.status(ERROR_BAD_REQUEST).send({
+      //     message: 'Переданы некорректные данные',
+      //   });
+      //   return;
+      // }
 
       res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
