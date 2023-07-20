@@ -6,6 +6,7 @@ const cardRouter = require('./routes/cards');
 const { ERROR_NOT_FOUND } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const error = require('./middlewares/error');
 
 const { PORT = 3000 } = process.env;
 
@@ -24,6 +25,7 @@ app.use('/', auth, cardRouter);
 app.use((req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: `Ресурс по адресу ${req.path} не найден` });
 });
+app.use(error);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
