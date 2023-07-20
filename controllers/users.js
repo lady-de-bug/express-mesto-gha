@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   ERROR_BAD_REQUEST,
@@ -36,9 +38,24 @@ function getUser(req, res) {
 }
 
 function createUser(req, res) {
-  const { name, about, avatar } = req.body;
-  return User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  // if (!email || !password) {
+  //   res.satus(400).send({ message: 'Не введен email или пароль' });
+  //   return;
+  // }
+  return bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.status(201).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+      _id: user._id,
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_BAD_REQUEST).send({
@@ -110,10 +127,54 @@ function updateAvatar(req, res) {
     });
 }
 
+function login(req, res) {
+  const { email, password } = req.body;
+  // if (!email || !password) {
+  //   res.satus(400).json({ error: 'Не введен email или пароль' });
+  //   return;
+  // }
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      return res.send({ token });
+      // res.cookie('jwt', token);
+      // return res.status(200).send({ message: 'Аутентификация прошла успешно' });
+    })
+    .catch((err) => {
+      res.status(401)
+        .send({ message: err.message });
+    });
+}
+
+function getCurrentUser(req, res) {
+  return User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: ' Запрашиваемый пользователь не найден' });
+        return;
+      }
+
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_BAD_REQUEST).send({
+          message: 'Переданы некорректные данные',
+        });
+        return;
+      }
+      res.status(ERROR_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
+}
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   updateAvatar,
+  login,
+  getCurrentUser,
 };
