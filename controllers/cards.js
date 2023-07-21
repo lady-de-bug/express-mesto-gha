@@ -31,8 +31,6 @@ function deleteCard(req, res, next) {
         throw new NotFoundError('Запрашиваемая карточка не найдена');
       }
       if (card.owner !== req.user._id) {
-        // eslint-disable-next-line no-console
-        console.log(typeof (card.owner));
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       }
 

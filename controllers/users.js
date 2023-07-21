@@ -123,7 +123,6 @@ function getCurrentUser(req, res, next) {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-
       res.send({ data: user });
     })
     .catch((err) => {
