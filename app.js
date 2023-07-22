@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-// const { ERROR_NOT_FOUND } = require('./utils/constants');
 const { createUserValidation, loginValidation } = require('./middlewares/celebrate');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -22,6 +22,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(helmet());
 app.post('/signup', createUserValidation, createUser);
 app.post('/signin', loginValidation, login);
 
