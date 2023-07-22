@@ -33,7 +33,6 @@ function deleteCard(req, res, next) {
       if (card.owner !== req.user._id) {
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       }
-
       res.send({ data: card });
     })
     .catch((err) => {
