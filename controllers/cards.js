@@ -25,15 +25,16 @@ function createCard(req, res, next) {
 
 function deleteCard(req, res, next) {
   const { cardId } = req.params;
-  return Card.findByIdAndRemove(cardId)
+  return Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Запрашиваемая карточка не найдена');
       }
-      if (card.owner !== req.user._id) {
+      if (String(card.owner) !== req.user._id) {
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       }
-      res.send({ data: card });
+      Card.findByIdAndRemove(cardId)
+        .then((currentCard) => res.send({ data: currentCard }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
