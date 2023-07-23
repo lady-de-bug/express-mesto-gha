@@ -34,15 +34,16 @@ function deleteCard(req, res, next) {
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       }
       Card.findByIdAndRemove(cardId)
-        .then((currentCard) => res.send({ data: currentCard }));
+        .then((currentCard) => res.send({ data: currentCard }))
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            next(new BadRequestError('Переданы некорректные данные'));
+            return;
+          }
+          next(err);
+        });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 }
 
 function likeCard(req, res, next) {

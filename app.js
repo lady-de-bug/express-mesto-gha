@@ -26,8 +26,9 @@ app.use(helmet());
 app.post('/signup', createUserValidation, createUser);
 app.post('/signin', loginValidation, login);
 
-app.use('/', auth, userRouter);
-app.use('/', auth, cardRouter);
+app.use(auth);
+app.use('/', userRouter);
+app.use('/', cardRouter);
 app.use((req, res, next) => {
   next(new NotFoundError(`Ресурс по адресу ${req.path} не найден`));
   // res.status(ERROR_NOT_FOUND).send({ message: `Ресурс по адресу ${req.path} не найден` });

@@ -33,9 +33,6 @@ function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!email || !password) {
-    throw new BadRequestError('Не введен email или пароль');
-  }
   return bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -106,9 +103,6 @@ function updateAvatar(req, res, next) {
 
 function login(req, res, next) {
   const { email, password } = req.body;
-  if (!email || !password) {
-    throw new BadRequestError('Не введен email или пароль');
-  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
